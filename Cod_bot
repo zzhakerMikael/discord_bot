@@ -1,3 +1,4 @@
+import random
 import discord
 from discord.ext import commands
 
@@ -35,6 +36,25 @@ async def KMN(ctx):
 
     await ctx.send('Yes, the bot is cool.')
 
+@bot.command() 
+async def knb(ctx, choice: str): 
+    choices = ['rock', 'paper', 'scissors'] 
+    # проверяем, что выбор пользователя является допустимым 
+    if choice not in choices: 
+        await ctx.send(f'Выберите: {", ".join(choices)}') 
+        return 
+    bot_choice = random.choice(choices) 
+    # определяем победителя и отправляем результат в чат 
+    if (choice == 'rock' and bot_choice == 'scissors') or (choice == 'paper' and bot_choice == 'rock') or (choice == 'scissors' and bot_choice == 'paper'): 
+        await ctx.send(f'{ctx.author.mention} победил! Бот выбрал {bot_choice}.') 
+    elif choice == bot_choice: 
+        await ctx.send(f'{ctx.author.mention} ничья! Бот выбрал {bot_choice}.') 
+    else: 
+        await ctx.send(f'{ctx.author.mention} проиграл! Бот выбрал {bot_choice}.')
 
 
-bot.run("your token!")
+
+bot.run("Your token")
+
+
+
