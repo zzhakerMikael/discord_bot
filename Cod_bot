@@ -1,15 +1,33 @@
 import random
 import discord
 from discord.ext import commands
+import os
+
+
+import requests
+
+print(os.listdir('images'))
+
+client_imp = 0
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='$', intents=intents)
+bot = commands.Bot(command_prefix=['$'], intents=intents)
+client = discord.Client(intents=intents)
+
 
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+
+
 
 @bot.command()
 async def hello(ctx):
@@ -51,6 +69,74 @@ async def knb(ctx, choice: str):
         await ctx.send(f'{ctx.author.mention} ничья! Бот выбрал {bot_choice}.') 
     else: 
         await ctx.send(f'{ctx.author.mention} проиграл! Бот выбрал {bot_choice}.')
+
+@bot.command()
+async def mem(ctx):
+    with open('images/mem1.jpg', 'rb') as f:
+        # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+        picture = discord.File(f)
+   # Можем передавать файл как параметр!
+    await ctx.send(file=picture)
+
+
+# А вот так можно подставить имя файла из переменной!
+@bot.command()
+async def mems(ctx):
+    img_name = random.choice(os.listdir('images/Mems'))
+    with open(f'images/Mems/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+
+
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('duck')
+async def duck(ctx):
+    '''По команде duck вызывает функцию get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
+
+
+@bot.event
+async def on_message(message):
+    global client_imp
+    if message.content.startswith('?nature'):
+        with open('images/natur/3_cup.jpg', 'rb') as f:
+            # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+            picture = discord.File(f)
+        # Можем передавать файл как параметр!
+        await message.channel.send(file=picture)
+        client_imp = 1
+        await message.channel.send("Напиши: 1, 2, 3")
+    elif client_imp == 1 and message.content.startswith('3'):
+        with open('images/natur/fact_1.jpg', 'rb') as f:
+            # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+            picture = discord.File(f)
+        # Можем передавать файл как параметр!
+        await message.channel.send(file=picture)
+        client_imp = 0
+    elif client_imp == 1 and message.content.startswith('2'):
+        with open('images/natur/fact_2.jpg', 'rb') as f:
+            # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+            picture = discord.File(f)
+        # Можем передавать файл как параметр!
+        await message.channel.send(file=picture)
+        client_imp = 0
+    elif client_imp == 1 and message.content.startswith('1'):
+        with open('images/natur/fact_3.jpg', 'rb') as f:
+            # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+            picture = discord.File(f)
+        # Можем передавать файл как параметр!
+        await message.channel.send(file=picture)
+        client_imp = 0
+    
 
 
 
